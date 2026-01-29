@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block heading %}Mój profil{% endblock %}
+
+{% block main %}
+    <div class="profile-page">
+        <div class="profile-header">
+            <h1>Profil: {{ user.username }}</h1>
+            <p class="profile-email"><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        <section class="profile-tasks">
+            <h2>Twoje zadania</h2>
+            
+            {% if tasks %}
+                <div class="profile-tasks-list">
+                    {% for task in tasks %}
+                        <article class="profile-task-card {% if task.is_completed %}completed{% endif %} priority-{{ task.priority }}">
+                            <div class="profile-task-info">
+                                <h3><a href="{% url 'task-detail' task.id %}">{{ task.title }}</a></h3>
+                                <p class="profile-task-date">Termin: {{ task.due_date|date:"d.m.Y" }} {{ task.due_time|time:"H:i" }}</p>
+                            </div>
+                            <div class="profile-task-badges">
+                                <span class="priority-badge priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                                <span class="status-badge {% if task.is_completed %}done{% endif %}">{% if task.is_completed %}Ukończone{% else %}Do zrobienia{% endif %}</span>
+                            </div>
+                            <div class="profile-task-actions">
+                                <a href="{% url 'task-detail' task.id %}" class="btn btn-small">Szczegóły</a>
+                                {% if not task.is_completed %}
+                                    <a href="{% url 'task-edit' task.id %}" class="btn btn-small">Edytuj</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-tasks">Nie masz jeszcze żadnych zadań.</p>
+            {% endif %}
+
+            <div class="profile-actions">
+                <a href="{% url 'task-create' %}" class="btn btn-primary">Dodaj zadanie</a>
+                <a href="{% url 'task-list' %}" class="btn btn-secondary">Wszystkie zadania</a>
+            </div>
+        </section>
+    </div>
+{% endblock %}

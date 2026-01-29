@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block heading %}Kategorie{% endblock %}
+
+{% block main %}
+    <section class="categories-section">
+        <header class="tasks-header-centered">
+            <a href="{% url 'category-create' %}" class="btn btn-primary">+ Nowa kategoria</a>
+        </header>
+
+        <h1 class="section-title">Kategorie</h1>
+
+        {% if categories %}
+            <div class="categories-list">
+                {% for category in categories %}
+                    <article class="category-item">
+                        <div class="category-color-preview" style="background-color: {{ category.color }}"></div>
+                        <div class="category-content">
+                            <h3>{{ category.name }}</h3>
+                            <span class="task-count">{{ category.task_count }} zadań</span>
+                        </div>
+                        <div class="category-actions">
+                            <a href="{% url 'category-edit' category.id %}" class="btn btn-small">Edytuj</a>
+                            <form method="post" action="{% url 'category-delete' category.id %}" class="delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-small btn-danger" 
+                                        onclick="return confirm('Usunąć kategorię? Zadania zostaną zachowane bez kategorii.')">
+                                    Usuń
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-items">Brak kategorii. Utwórz pierwszą kategorię.</p>
+        {% endif %}
+    </section>
+{% endblock %}

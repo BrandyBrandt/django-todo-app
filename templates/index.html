@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block heading %}Strona główna{% endblock %}
+
+{% block main %}
+    <section class="hero">
+        <h1>ToDo List z przypomnieniami</h1>
+        <p>Zarządzaj swoimi zadaniami i nie przegap żadnego terminu</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts-register' %}" class="btn btn-primary">Rozpocznij</a>
+        {% else %}
+            <a href="{% url 'task-create' %}" class="btn btn-primary">Dodaj nowe zadanie</a>
+        {% endif %}
+    </section>
+
+    {% if user.is_authenticated %}
+        {% if reminders %}
+            <section class="reminders-section">
+                <h2>Przypomnienia</h2>
+                <div class="reminders-list">
+                    {% for task in reminders %}
+                        <div class="reminder-item priority-{{ task.priority }}">
+                            <span class="reminder-icon">⏰</span>
+                            <div class="reminder-content">
+                                <a href="{% url 'task-detail' task.id %}">{{ task.title }}</a>
+                                <time datetime="{{ task.due_date|date:'Y-m-d' }}">Termin: {{ task.due_date|date:"d.m.Y" }} {{ task.due_time|time:"H:i" }}</time>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="upcoming-tasks">
+            <h2>Najbliższe zadania</h2>
+            {% if tasks %}
+                <div class="tasks-grid">
+                    {% for task in tasks %}
+                        <article class="task-card priority-{{ task.priority }}">
+                            <header class="task-header">
+                                <h3><a href="{% url 'task-detail' task.id %}">{{ task.title }}</a></h3>
+                                <span class="priority-badge">{{ task.get_priority_display }}</span>
+                            </header>
+                            {% if task.description %}
+                                <p class="task-desc">{{ task.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            <footer class="task-footer">
+                                <time datetime="{{ task.due_date|date:'Y-m-d' }}">{{ task.due_date|date:"d.m.Y" }} {{ task.due_time|time:"H:i" }}</time>
+                                <a href="{% url 'task-detail' task.id %}" class="read-more">Szczegóły →</a>
+                            </footer>
+                        </article>
+                    {% endfor %}
+                </div>
+                <div class="see-all">
+                    <a href="{% url 'task-list' %}" class="btn btn-secondary">Wszystkie zadania</a>
+                </div>
+            {% else %}
+                <p class="no-tasks">Brak zadań. Dodaj swoje pierwsze zadanie!</p>
+            {% endif %}
+        </section>
+    {% else %}
+        <section class="features">
+            <h2>Funkcje aplikacji</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">📋</span>
+                    <h3>Lista zadań</h3>
+                    <p>Twórz i zarządzaj swoimi zadaniami</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⏰</span>
+                    <h3>Przypomnienia</h3>
+                    <p>Ustaw przypomnienia dla ważnych zadań</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <h3>Priorytety</h3>
+                    <p>Oznaczaj zadania według ważności</p>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

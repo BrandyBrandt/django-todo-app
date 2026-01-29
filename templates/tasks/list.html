@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block heading %}Moje zadania{% endblock %}
+
+{% block main %}
+    <section class="tasks-section">
+        <header class="tasks-header-centered">
+            <a href="{% url 'task-create' %}" class="btn btn-primary">+ Nowe zadanie</a>
+        </header>
+
+        <h1 class="section-title">Moje zadania</h1>
+
+        <div class="tasks-controls">
+            <form method="get" class="search-form">
+                {{ form.query }}
+                <select name="category" class="form-select">
+                    <option value="">Wszystkie kategorie</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-search">Szukaj</button>
+            </form>
+
+            <div class="filter-buttons">
+                <a href="?filter=all" class="filter-btn {% if filter_type == 'all' %}active{% endif %}">Wszystkie</a>
+                <a href="?filter=active" class="filter-btn {% if filter_type == 'active' %}active{% endif %}">Aktywne</a>
+                <a href="?filter=completed" class="filter-btn {% if filter_type == 'completed' %}active{% endif %}">Ukończone</a>
+                <a href="?filter=today" class="filter-btn {% if filter_type == 'today' %}active{% endif %}">Na dziś</a>
+                <a href="?filter=overdue" class="filter-btn filter-overdue {% if filter_type == 'overdue' %}active{% endif %}">Po terminie</a>
+            </div>
+        </div>
+
+        {% if tasks %}
+            <div class="tasks-list">
+                {% for task in tasks %}
+                    <article class="task-item {% if task.is_completed %}completed{% elif task.is_overdue %}overdue{% endif %} priority-{{ task.priority }}">
+                        <div class="task-checkbox">
+                            <form method="post" action="{% url 'task-toggle' task.id %}" class="toggle-form">
+                                {% csrf_token %}
+                                <button type="submit" class="toggle-btn" title="Zmień status" data-task-id="{{ task.id }}">
+                                    {% if task.is_completed %}✓{% else %}○{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                        <div class="task-content">
+                            <h3><a href="{% url 'task-detail' task.id %}">{{ task.title }}</a></h3>
+                            <div class="task-meta">
+                                <span class="priority-badge priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                                {% if task.category %}
+                                    <span class="category-badge" style="background-color: {{ task.category.color }}">{{ task.category.name }}</span>
+                                {% endif %}
+                                <time datetime="{{ task.due_date|date:'Y-m-d' }}T{{ task.due_time|time:'H:i' }}">
+                                    Termin: {{ task.due_date|date:"d.m.Y" }} {{ task.due_time|time:"H:i" }}
+                                </time>
+                                {% if task.is_overdue and not task.is_completed %}
+                                    <span class="status-badge status-overdue">⚠ Po terminie</span>
+                                {% endif %}
+                                {% if task.reminder_date %}
+                                    <span class="reminder-badge" title="Przypomnienie ustawione">
+                                        🔔 {{ task.reminder_date|date:"d.m.Y" }} {{ task.reminder_time|time:"H:i" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% if task.tags.exists %}
+                                <div class="task-tags">
+                                    {% for tag in task.tags.all %}
+                                        <span class="tag">{{ tag.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="task-actions">
+                            {% if task.is_completed %}
+                                <span class="btn btn-small btn-disabled">Edytuj</span>
+                            {% else %}
+                                <a href="{% url 'task-edit' task.id %}" class="btn btn-small">Edytuj</a>
+                            {% endif %}
+                            <form method="post" action="{% url 'task-delete' task.id %}" class="delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Usunąć zadanie?')">Usuń</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-tasks">Brak zadań spełniających kryteria.</p>
+        {% endif %}
+    </section>
+{% endblock %}

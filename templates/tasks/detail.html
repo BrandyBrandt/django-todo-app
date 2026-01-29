@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block heading %}{{ task.title }}{% endblock %}
+
+{% block main %}
+    <section class="task-detail">
+        <article class="task-card-detail {% if task.is_completed %}completed{% endif %} priority-{{ task.priority }}">
+            <header class="task-detail-header">
+                <h1>{{ task.title }}</h1>
+                <span class="priority-badge priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+            </header>
+
+            <div class="task-detail-body">
+                {% if task.description %}
+                    <div class="task-description">
+                        <h3>Opis</h3>
+                        <p>{{ task.description }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="task-info">
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value">{% if task.is_completed %}Ukończone{% else %}Do zrobienia{% endif %}</span>
+                    </div>
+                    {% if task.category %}
+                        <div class="info-item">
+                            <span class="info-label">Kategoria:</span>
+                            <span class="info-value category-badge" style="background-color: {{ task.category.color }}">{{ task.category.name }}</span>
+                        </div>
+                    {% endif %}
+                    {% if task.tags.exists %}
+                        <div class="info-item">
+                            <span class="info-label">Tagi:</span>
+                            <span class="info-value">
+                                {% for tag in task.tags.all %}
+                                    <span class="tag">{{ tag.name }}</span>
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="info-item">
+                        <span class="info-label">Termin wykonania:</span>
+                        <time datetime="{{ task.due_date|date:'Y-m-d' }}T{{ task.due_time|time:'H:i' }}" class="info-value">
+                            {{ task.due_date|date:"d.m.Y" }} {{ task.due_time|time:"H:i" }}
+                        </time>
+                    </div>
+                    {% if task.reminder_date %}
+                        <div class="info-item">
+                            <span class="info-label">Przypomnienie:</span>
+                            <time datetime="{{ task.reminder_date|date:'Y-m-d' }}T{{ task.reminder_time|time:'H:i' }}" class="info-value reminder-badge">
+                                🔔 {{ task.reminder_date|date:"d.m.Y" }} {{ task.reminder_time|time:"H:i" }}
+                            </time>
+                        </div>
+                    {% endif %}
+                    <div class="info-item">
+                        <span class="info-label">Utworzono:</span>
+                        <time datetime="{{ task.created_date|date:'c' }}" class="info-value">{{ task.created_date|date:"d.m.Y H:i" }}</time>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="task-detail-footer">
+                <form method="post" action="{% url 'task-toggle' task.id %}" class="toggle-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn {% if task.is_completed %}btn-secondary{% else %}btn-success{% endif %}">
+                        {% if task.is_completed %}Oznacz jako nieukończone{% else %}Oznacz jako ukończone{% endif %}
+                    </button>
+                </form>
+                <a href="{% url 'task-edit' task.id %}" class="btn btn-primary">Edytuj</a>
+                <form method="post" action="{% url 'task-delete' task.id %}" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć to zadanie?')">Usuń</button>
+                </form>
+            </footer>
+        </article>
+
+        <a href="{% url 'task-list' %}" class="back-link">← Powrót do listy</a>
+    </section>
+{% endblock %}

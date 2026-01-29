@@ -1,0 +1,157 @@
+INSTRUKCJA URUCHOMIENIA APLIKACJI
+==================================
+
+Wymagania:
+----------
+- Python 3.8 lub nowszy
+- pip (menedżer pakietów Python)
+
+
+Krok 1: Rozpakowanie projektu i otwarcie CMD
+---------------------------------------------
+Rozpakuj plik .zip do wybranego folderu.
+
+Otwórz wiersz polecenia CMD (WAŻNE: CMD, nie PowerShell!) i przejdź do folderu projektu:
+
+    cd SCIEZKA_DO_ROZPAKOWANEGO_FOLDERU
+
+Przykład:
+    cd C:\Users\TwojaNazwa\Desktop\django-todo-app
+
+
+Krok 2: Utworzenie wirtualnego środowiska
+------------------------------------------
+Windows:
+    python -m venv venv
+    venv\Scripts\activate
+
+Linux/Mac:
+    python3 -m venv venv
+    source venv/bin/activate
+
+Po aktywacji zobaczysz (venv) przed ścieżką w terminalu.
+
+
+Krok 3: Instalacja wymaganych bibliotek
+----------------------------------------
+    pip install Django
+    pip install djangorestframework
+
+To zainstaluje Django i Django REST Framework.
+
+
+Krok 4: Migracja bazy danych
+-----------------------------
+    python manage.py migrate
+
+To utworzy bazę danych SQLite i wszystkie potrzebne tabele.
+
+
+Krok 5: Utworzenie konta administratora
+----------------------------------------
+    python manage.py createsuperuser
+
+Postępuj zgodnie z instrukcjami w terminalu:
+- Podaj nazwę użytkownika (np. admin)
+- Email (opcjonalny - można pominąć, wciśnij Enter)
+- Hasło (minimum 8 znaków, nie może być zbyt proste)
+- Potwierdź hasło
+
+WAŻNE: Zapamiętaj te dane - będą potrzebne do logowania!
+
+
+Krok 6: Uruchomienie serwera
+-----------------------------
+    python manage.py runserver
+
+Serwer uruchomi się na http://127.0.0.1:8000/
+
+
+Krok 7: Otwórz aplikację w przeglądarce
+----------------------------------------
+Wpisz w przeglądarce jeden z adresów:
+- http://127.0.0.1:8000/          - strona główna aplikacji
+- http://127.0.0.1:8000/admin/    - panel administratora
+
+
+Testowanie aplikacji:
+----------------------
+
+1. REJESTRACJA NOWEGO UŻYTKOWNIKA:
+   - Kliknij "Register" na stronie głównej
+   - Wypełnij formularz rejestracyjny
+   - Zaloguj się nowymi danymi
+
+2. TWORZENIE KATEGORII:
+   - Po zalogowaniu kliknij "Categories"
+   - Kliknij "Create Category"
+   - Podaj nazwę kategorii (np. "Praca", "Dom", "Nauka")
+   - Wybierz kolor
+   - Zapisz
+
+3. TWORZENIE ZADAŃ:
+   - Kliknij "Create Task"
+   - Wypełnij formularz:
+     * Tytuł zadania (minimum 3 znaki)
+     * Opis (opcjonalny)
+     * Priorytet (Low/Medium/High)
+     * Data wykonania (wymagana)
+     * Kategoria (wybierz wcześniej utworzoną)
+     * Tagi (opcjonalne)
+   - Zapisz
+
+4. ZARZĄDZANIE ZADANIAMI:
+   - Lista zadań: przegląd wszystkich zadań
+   - Filtry: Active, Completed, Today, This Week, Overdue
+   - Wyszukiwarka: szukaj po tytule, opisie, tagach
+   - Oznaczanie jako wykonane: kliknij przycisk ○/✓
+   - Edycja: kliknij "Edit" przy zadaniu
+   - Usuwanie: kliknij "Delete" przy zadaniu
+
+5. PANEL ADMINISTRATORA:
+   - Przejdź na http://127.0.0.1:8000/admin/
+   - Zaloguj się jako superuser (dane z kroku 6)
+   - Możesz zarządzać wszystkimi użytkownikami, zadaniami, kategoriami
+
+
+Zatrzymanie serwera:
+--------------------
+W terminalu naciśnij: Ctrl + C (Windows/Linux) lub Cmd + C (Mac)
+
+
+Rozwiązywanie problemów:
+------------------------
+
+PROBLEM: "python nie jest rozpoznawany jako polecenie"
+ROZWIĄZANIE: 
+- Użyj python3 zamiast python (Linux/Mac)
+- Upewnij się, że Python jest dodany do PATH (Windows)
+
+PROBLEM: "No module named 'django'"
+ROZWIĄZANIE:
+- Upewnij się, że wirtualne środowisko jest aktywne (widzisz (venv))
+- Wykonaj ponownie: pip install -r requirements.txt
+
+PROBLEM: Błąd przy migracji
+ROZWIĄZANIE:
+- Usuń plik db.sqlite3 (jeśli istnieje)
+- Wykonaj ponownie: python manage.py migrate
+
+PROBLEM: Port 8000 jest zajęty
+ROZWIĄZANIE:
+- Użyj innego portu: python manage.py runserver 8001
+- Otwórz w przeglądarce: http://127.0.0.1:8001/
+
+
+Uwagi techniczne:
+-----------------
+- Baza danych: SQLite (plik db.sqlite3 - tworzy się automatycznie)
+- Email backend: Console (wiadomości email wyświetlają się w terminalu)
+- DEBUG mode: Włączony (dla celów deweloperskich)
+- Aplikacja działa lokalnie na porcie 8000
+
+
+W razie pytań:
+--------------
+Email: aleksander.brandtwaw@gmail.com
+GitHub: https://github.com/BrandyBrandt/django-todo-app

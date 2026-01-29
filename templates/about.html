@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block heading %}O aplikacji{% endblock %}
+
+{% block main %}
+    <div class="about-section">
+        <h1>O aplikacji ToDo List</h1>
+        <p>Aplikacja do zarządzania zadaniami z funkcją przypomnień stworzona w Django.</p>
+        
+        <h2>Funkcje</h2>
+        <ul>
+            <li>Tworzenie i edycja zadań</li>
+            <li>Ustawianie terminów wykonania</li>
+            <li>System przypomnień</li>
+            <li>Priorytety zadań (niski, średni, wysoki)</li>
+            <li>Oznaczanie zadań jako ukończone</li>
+            <li>Wyszukiwanie zadań</li>
+            <li>Filtrowanie po statusie</li>
+        </ul>
+
+        <h2>Technologie</h2>
+        <ul>
+            <li>Backend: Django</li>
+            <li>Baza danych: SQLite</li>
+            <li>Frontend: HTML5, CSS3</li>
+        </ul>
+
+        <h2>Rozpocznij</h2>
+        <p>
+            {% if user.is_authenticated %}
+                Jesteś zalogowany jako <strong>{{ user.username }}</strong>.
+                <a href="{% url 'task-create' %}">Dodaj zadanie</a>
+            {% else %}
+                <a href="{% url 'accounts-register' %}">Zarejestruj się</a> aby korzystać z aplikacji.
+            {% endif %}
+        </p>
+    </div>
+{% endblock %}

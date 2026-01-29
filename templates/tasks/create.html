@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block heading %}Nowe zadanie{% endblock %}
+
+{% block main %}
+    <section class="form-section">
+        <h1>Dodaj nowe zadanie</h1>
+        
+        <form method="post" class="task-form" id="taskForm" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_title">Tytuł zadania <span class="required">*</span></label>
+                {{ form.title }}
+                <span class="field-error" id="title-error">
+                    {% if form.title.errors %}{{ form.title.errors.0 }}{% endif %}
+                </span>
+                <small class="form-hint">Minimum 3 znaki</small>
+            </div>
+
+            <div class="form-group">
+                <label for="id_description">Opis (opcjonalnie)</label>
+                {{ form.description }}
+                <span class="field-error" id="description-error">
+                    {% if form.description.errors %}{{ form.description.errors.0 }}{% endif %}
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="id_category">Kategoria (opcjonalnie)</label>
+                {{ form.category }}
+                <span class="field-error" id="category-error">
+                    {% if form.category.errors %}{{ form.category.errors.0 }}{% endif %}
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="id_tags">Tagi (opcjonalnie)</label>
+                {{ form.tags }}
+                <small class="form-hint">Przytrzymaj Ctrl aby wybrać kilka</small>
+                <span class="field-error" id="tags-error">
+                    {% if form.tags.errors %}{{ form.tags.errors.0 }}{% endif %}
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="id_new_tag">Dodaj własny tag (opcjonalnie)</label>
+                {{ form.new_tag }}
+                <small class="form-hint">Wpisz nazwę nowego tagu, który chcesz dodać</small>
+                <span class="field-error" id="new_tag-error">
+                    {% if form.new_tag.errors %}{{ form.new_tag.errors.0 }}{% endif %}
+                </span>
+            </div>
+
+
+            <fieldset class="form-fieldset">
+                <legend>Termin wykonania <span class="required">*</span></legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_due_date">Data</label>
+                        {{ form.due_date }}
+                        <span class="field-error" id="due_date-error">
+                            {% if form.due_date.errors %}{{ form.due_date.errors.0 }}{% endif %}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_due_time">Godzina</label>
+                        {{ form.due_time }}
+                        <span class="field-error" id="due_time-error">
+                            {% if form.due_time.errors %}{{ form.due_time.errors.0 }}{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <p class="form-hint-center">Domyślna godzina: 00:00</p>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+                <legend>Przypomnienie (opcjonalnie)</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_reminder_date">Data</label>
+                        {{ form.reminder_date }}
+                        <span class="field-error" id="reminder_date-error">
+                            {% if form.reminder_date.errors %}{{ form.reminder_date.errors.0 }}{% endif %}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_reminder_time">Godzina</label>
+                        <div class="input-with-clear">
+                            {{ form.reminder_time }}
+                            <button type="button" id="clear-reminder-time" class="btn-clear" title="Wyczyść godzinę">✕</button>
+                        </div>
+                        <span class="field-error" id="reminder_time-error">
+                            {% if form.reminder_time.errors %}{{ form.reminder_time.errors.0 }}{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <label for="id_priority">Priorytet</label>
+                {{ form.priority }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Dodaj zadanie</button>
+                <a href="{% url 'task-list' %}" class="btn btn-secondary">Anuluj</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- <script src="{% static 'js/form-validation.js' %}"></script> -->
+{% endblock %}

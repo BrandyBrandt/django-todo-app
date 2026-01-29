@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block heading %}{% if category %}Edytuj kategorię{% else %}Nowa kategoria{% endif %}{% endblock %}
+
+{% block main %}
+    <section class="form-section">
+        <h1>{% if category %}Edytuj kategorię{% else %}Dodaj nową kategorię{% endif %}</h1>
+        
+        <form method="post" class="category-form" id="categoryForm" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_name">Nazwa kategorii <span class="required">*</span></label>
+                {{ form.name }}
+                <span class="field-error" id="name-error">
+                    {% if form.name.errors %}{{ form.name.errors.0 }}{% endif %}
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="id_color">Kolor</label>
+                {{ form.color }}
+                <span class="field-error" id="color-error">
+                    {% if form.color.errors %}{{ form.color.errors.0 }}{% endif %}
+                </span>
+                <div class="color-preview" id="colorPreview" style="background-color: {{ form.color.value|default:'#3498db' }}"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    {% if category %}Zapisz zmiany{% else %}Dodaj kategorię{% endif %}
+                </button>
+                <a href="{% url 'category-list' %}" class="btn btn-secondary">Anuluj</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var colorInput = document.getElementById('id_color');
+    var colorPreview = document.getElementById('colorPreview');
+    
+    if (colorInput && colorPreview) {
+        colorInput.addEventListener('input', function() {
+            colorPreview.style.backgroundColor = this.value;
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block heading %}Logowanie{% endblock %}
+
+{% block main %}
+    <div class="form-container auth-form">
+        <h1>Logowanie</h1>
+        <p class="form-subtitle">Zaloguj się do swojego konta</p>
+
+        <form method="post" class="auth-form-content" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error-messages">
+                    {% for error in form.non_field_errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username">Nazwa użytkownika</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="field-errors">
+                        {% for error in form.username.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Hasło</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="field-errors">
+                        {% for error in form.password.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Zaloguj</button>
+        </form>
+
+        <p class="form-footer">
+            Nie masz konta? <a href="{% url 'accounts-register' %}">Zarejestruj się</a>
+        </p>
+    </div>
+{% endblock %}
